@@ -234,3 +234,127 @@ my_decorator3(goodnight2)()
 
 
 print("########################################")
+
+
+"""
+
+What if we have a decorator like above that is our_decorator and also have a function that is bell function that took a parameter (Like string)? Well, if we run this just like this (Lines 268 to 282), we'll get this error: TypeError: bell() missing 1 required positional argument: 'sound'. How can we make this allow arguments? When we call bell function, It says bell() missing 1 required positional argument that is sound argument. And actually when we call bell function, we're expecting to heve a parameter, but here (Line 271) that we call func in wrap_func function, we're not giving it any parameters. 
+
+
+We can just simply add a parameter to our func (Line 288) and then our wrap_func function receives the parameter (Line 286). And now if we run bell1 function we get an error that says: TypeError: wrap_func() missing 1 required positional argument: 'x'. So now what we should do for solving this?
+
+Well, we should just give the function a sound like 'jingle' when we call it (Line 307). Now if we click run it works. 
+
+We're calling bell2 with 'jingle'. So this func (bell2) gets passed to our decorator (our_decorator1) and then we receive the x as argument. For better understanding look at these two lines (Line 314 and Line 315). So our decorator above works just like this. So like this the wrap_func accepts the parameter and then runs the func function.
+
+What if our function (bell4) had an emoji that it accepts? Well we should create another parameter y and pass it to func and wrapp_func function just like x (Lines 319 and 321). And if we run this it works but this is hectic. Every time we need to change parameters in our function, we have to modify these two function (func and wrap_func) and What if we had a function bell5 that gets a keyword arguments like default emoji ("📣") (Line 335)? And now if we run this we get this error: TypeError: wrap_func() missing 1 required positional argument: 'y'. So now what should we do for solving these problems? Well, theer's actually a pattern here that we can use that makes thing really really simple for us. And it's this syntax:
+
+
+Decorator Pattern: 
+
+def decorator(func):
+    def wrap_func(*args, **kwargs):
+        func(*args, **kwargs)
+    return wrap_func
+
+
+We should define our wrap_function that gets*args that it takes all positional arguments and then **kwargs that it takes all keyword arguments. And we call the function by saying func(*args, **kwargs) to unpack all the positional and keyword arguments. And now if we define a function like bell6 and then give it a keyword argument like emoji = "📣" and then call the function with and without emoji parameter, it works as well without any errors in both cases. 
+
+So this decorator pattern gives our decorators flexibility. So that we're able to pass as many arguments as we want into our wrap_func by using *args and **kwargs and then unpacking them inside of a function (func). And this pattern or let's say this syntax is why decorators are so powerful.
+
+"""
+
+
+def our_decorator(func):
+    def wrap_func():
+        print("*************")
+        func()
+        print("*************")
+    return wrap_func
+
+
+@our_decorator
+def bell(sound):
+    print(sound)
+
+
+# bell()
+# TypeError: bell() missing 1 required positional argument: 'sound'
+
+
+def our_decorator1(func):
+    def wrap_func(x):
+        print("*************")
+        func(x)
+        print("*************")
+    return wrap_func
+
+
+@our_decorator1
+def bell1(sound):
+    print(sound)
+
+
+# bell1()
+# TypeError: wrap_func() missing 1 required positional argument: 'x'
+
+
+@our_decorator1
+def bell2(sound):
+    print(sound)
+
+
+bell2("jingle")
+
+
+def bell3(sound):
+    print(sound)
+
+
+c = our_decorator1(bell3)
+c("jingle")
+
+
+def our_decorator2(func):
+    def wrap_func(x, y):
+        print("*************")
+        func(x, y)
+        print("*************")
+    return wrap_func
+
+
+@our_decorator2
+def bell4(sound, emoji):
+    print(sound, emoji)
+
+
+bell4("jingle", '🔔')
+
+
+@our_decorator2
+def bell5(sound, emoji="📣"):
+    print(sound, emoji)
+
+
+# bell4("jingle")
+# TypeError: wrap_func() missing 1 required positional argument: 'y'
+
+
+def our_decorator3(func):
+    def wrap_func(*args, **kwargs):
+        print("*************")
+        func(*args, **kwargs)
+        print("*************")
+    return wrap_func
+
+
+@our_decorator3
+def bell6(sound, emoji="📣"):
+    print(sound, emoji)
+
+
+bell6("jingle", '🔔')
+bell6("jingle")
+
+
+print("########################################")
